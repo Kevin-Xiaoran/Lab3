@@ -3,9 +3,11 @@ package org.translation;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,6 +18,7 @@ import org.json.JSONObject;
  */
 public class JSONTranslator implements Translator {
 
+    private static final String ALPHATHREE = "alpha3";
     private final Map<String, JSONObject> countryMap = new HashMap<String, JSONObject>();
 
     /**
@@ -41,7 +44,7 @@ public class JSONTranslator implements Translator {
             int arrayLength = jsonArray.length();
             for (int i = 0; i < arrayLength; i++) {
                 JSONObject countryObject = jsonArray.getJSONObject(i);
-                String countryCode = countryObject.getString("alpha3");
+                String countryCode = countryObject.getString(ALPHATHREE);
                 countryMap.put(countryCode, countryObject);
             }
 
@@ -56,7 +59,7 @@ public class JSONTranslator implements Translator {
         ArrayList<String> countryLanguages = new ArrayList<>();
         JSONObject countryObject = this.countryMap.get(country);
         countryObject.keySet().forEach(key -> {
-            if (!key.equals("alpha3") && !key.equals("alpha2") && !key.equals("id")) {
+            if (!key.equals(ALPHATHREE) && !key.equals("alpha2") && !key.equals("id")) {
                 countryLanguages.add(key);
             }
         });
@@ -68,7 +71,7 @@ public class JSONTranslator implements Translator {
     public List<String> getCountries() {
         ArrayList<String> countryCodes = new ArrayList<String>();
         this.countryMap.keySet().forEach(key -> {
-            countryCodes.add(countryMap.get(key).getString("alpha2"));
+            countryCodes.add(countryMap.get(key).getString(ALPHATHREE));
         });
 
         return countryCodes;

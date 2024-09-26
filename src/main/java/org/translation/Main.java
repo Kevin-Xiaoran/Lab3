@@ -1,6 +1,9 @@
 package org.translation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * Main class for this program.
@@ -66,11 +69,11 @@ public class Main {
     private static String promptForCountry(Translator translator) {
         List<String> countryNames = new ArrayList<>();
         List<String> countryCodes = translator.getCountries();
-        LanguageCodeConverter converter = new LanguageCodeConverter();
+        CountryCodeConverter converter = new CountryCodeConverter();
         countryCodes.forEach(countryCode -> {
-            String countryName = converter.fromLanguageCode(countryCode);
+            String countryName = converter.fromCountryCode(countryCode);
             if (countryName != null) {
-                countryNames.add(converter.fromLanguageCode(countryCode));
+                countryNames.add(countryName);
             }
         });
 
