@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -13,9 +14,11 @@ import java.util.Map;
  */
 public class CountryCodeConverter {
 
-    // TODO Task: pick appropriate instance variable(s) to store the data necessary for this class
+    private static final int PARTSLENGTH = 3;
     private final Map<String, String> countryCodeMap = new HashMap<String, String>();
     private final Map<String, String> codeCountryMap = new HashMap<String, String>();
+    private final Map<String, String> twoLetterToThree = new HashMap<String, String>();
+    private final Map<String, String> threeLetterToTwo = new HashMap<String, String>();
 
     /**
      * Default constructor which will load the country codes from "country-codes.txt"
@@ -37,11 +40,17 @@ public class CountryCodeConverter {
             List<String> lines = Files.readAllLines(Paths.get(getClass()
                     .getClassLoader().getResource(filename).toURI()));
 
-            // TODO Task: use lines to populate the instance variable(s)
             for (String line : lines) {
-                String[] parts = line.split("\t ");
-                countryCodeMap.put(parts[0], parts[2]);
-                codeCountryMap.put(parts[2], parts[0]);
+                String[] parts = line.split("\t");
+                if (parts.length >= PARTSLENGTH) {
+                    String lowerCaseTwoLetterCode = parts[1].toLowerCase();
+                    String lowerCaseThreeLetterCode = parts[2].toLowerCase();
+                    countryCodeMap.put(parts[0], lowerCaseThreeLetterCode);
+                    codeCountryMap.put(lowerCaseThreeLetterCode, parts[0]);
+                    twoLetterToThree.put(lowerCaseTwoLetterCode, lowerCaseThreeLetterCode);
+                    threeLetterToTwo.put(lowerCaseThreeLetterCode, lowerCaseTwoLetterCode);
+                }
+
             }
         }
         catch (IOException | URISyntaxException ex) {
@@ -56,7 +65,6 @@ public class CountryCodeConverter {
      * @return the name of the country corresponding to the code
      */
     public String fromCountryCode(String code) {
-        // TODO Task: update this code to use an instance variable to return the correct value
         return this.codeCountryMap.get(code);
     }
 
@@ -66,8 +74,25 @@ public class CountryCodeConverter {
      * @return the 3-letter code of the country
      */
     public String fromCountry(String country) {
-        // TODO Task: update this code to use an instance variable to return the correct value
         return this.countryCodeMap.get(country);
+    }
+
+    /**
+     * Returns the 3-letter code of the country for the given 2-letter country code.
+     * @param code the alpha2 of the country
+     * @return the 3-letter code of the country
+     */
+    public String fromTwoLetter(String code) {
+        return this.twoLetterToThree.get(code);
+    }
+
+    /**
+     * Returns the 2-letter code of the country for the given 3-letter country code.
+     * @param code the alpha3 of the country
+     * @return the 2-letter code of the country
+     */
+    public String fromThreeLetter(String code) {
+        return this.threeLetterToTwo.get(code);
     }
 
     /**
@@ -75,7 +100,6 @@ public class CountryCodeConverter {
      * @return how many countries are included in this code converter.
      */
     public int getNumCountries() {
-        // TODO Task: update this code to use an instance variable to return the correct value
         return this.countryCodeMap.size() - 1;
     }
 }

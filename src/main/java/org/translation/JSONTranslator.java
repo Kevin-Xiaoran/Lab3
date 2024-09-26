@@ -16,7 +16,6 @@ import org.json.JSONObject;
  */
 public class JSONTranslator implements Translator {
 
-    // TODO Task: pick appropriate instance variables for this class
     private final Map<String, JSONObject> countryMap = new HashMap<String, JSONObject>();
 
     /**
@@ -39,12 +38,10 @@ public class JSONTranslator implements Translator {
 
             JSONArray jsonArray = new JSONArray(jsonString);
 
-            // TODO Task: use the data in the jsonArray to populate your instance variables
-            //            Note: this will likely be one of the most substantial pieces of code you write in this lab.
             int arrayLength = jsonArray.length();
             for (int i = 0; i < arrayLength; i++) {
                 JSONObject countryObject = jsonArray.getJSONObject(i);
-                String countryCode = countryObject.getString("alpha2");
+                String countryCode = countryObject.getString("alpha3");
                 countryMap.put(countryCode, countryObject);
             }
 
@@ -56,7 +53,7 @@ public class JSONTranslator implements Translator {
 
     @Override
     public List<String> getCountryLanguages(String country) {
-        ArrayList<String> countryLanguages = new ArrayList<String>();
+        ArrayList<String> countryLanguages = new ArrayList<>();
         JSONObject countryObject = this.countryMap.get(country);
         countryObject.keySet().forEach(key -> {
             if (!key.equals("alpha3") && !key.equals("alpha2") && !key.equals("id")) {
@@ -69,11 +66,9 @@ public class JSONTranslator implements Translator {
 
     @Override
     public List<String> getCountries() {
-        // TODO Task: return an appropriate list of country codes,
-        //            but make sure there is no aliasing to a mutable object
         ArrayList<String> countryCodes = new ArrayList<String>();
         this.countryMap.keySet().forEach(key -> {
-            countryCodes.add(key);
+            countryCodes.add(countryMap.get(key).getString("alpha2"));
         });
 
         return countryCodes;
@@ -81,7 +76,6 @@ public class JSONTranslator implements Translator {
 
     @Override
     public String translate(String country, String language) {
-        // TODO Task: complete this method using your instance variables as needed
         return this.countryMap.get(country).getString(language);
     }
 }
